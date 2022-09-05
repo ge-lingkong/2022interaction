@@ -7,7 +7,7 @@ void draw(){
   if(mousePressed)
     line(mouseX,mouseY, pmouseX,pmouseY);
 }
-void mousePressed(){
+void keyPressed(){
   if(key=='1') stroke(0,255,0);
   if(key=='2') stroke(0,0,255);
 }
