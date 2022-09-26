@@ -345,3 +345,28 @@ void drawPokerCard(int x,int y,String face){
   text(face, x,y+25);
 }
 ```
+# Week04
+## 一個往右上角跑的球球
+```processing
+void setup(){
+  size(500,500);
+}
+int x=250,y=250;
+void draw(){
+  ellipse(x,y, 10,10);
+  x+=1;
+  y-=1;
+}
+```
+## 
+```processing
+
+```
+## 
+```processing
+
+```
+## 
+```processing
+
+```
