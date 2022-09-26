@@ -358,15 +358,178 @@ void draw(){
   y-=1;
 }
 ```
-## 
+## 球球碰到邊界會反彈
 ```processing
-
+void setup(){
+  size(500,500);
+}
+float x=250, y=250;
+float vx=1.0, vy=-0.5;
+void draw(){
+  ellipse(x,y, 10,10);
+  x+=vx;
+  y+=vy;
+  if(x<0 || x>500) vx*=-1;
+  if(y<0 || y>500) vy*=-1;
+}
 ```
-## 
+## 背景蓋殘影，板子彈球球
 ```processing
-
+void setup(){
+  size(500,500);
+}
+float x=250, y=250;
+float vx=2.0, vy=-1.5;
+void draw(){
+  background(#FFFFF2);
+  int boardX=mouseX;
+  rect(boardX,470, 100,20, 5);
+  ellipse(x,y, 10,10);
+  x+=vx;
+  y+=vy;
+  if(x<0 || x>500) vx*=-1;
+  if(y<0 || (y>470 && x>boardX && x<boardX+100)) vy*=-1;
+}
 ```
-## 
+## 板子彈球、抽球、縮放
 ```processing
-
+void setup(){
+  size(500,500);
+}
+float x=250, y=250;
+float vx=2.0, vy=-1.5;
+float boardX,boardY=470, boardW=100,boardH=20;
+void draw(){
+  background(#FFFFF2);
+  boardX=mouseX-boardW/2;
+  rect(boardX,boardY, boardW,boardH, 5);
+  ellipse(x,y, 10,10);
+  x+=vx;
+  y+=vy;
+  if(x<0 || x>500) vx*=-1;
+  if(y<0) vy*=-1;
+  if(y>boardY && y<boardY+boardH && x>boardX && x<boardX+boardW){
+    vy*=-1;
+    vx+=(mouseX-pmouseX)/2;
+  }
+  if(mousePressed && mouseButton==LEFT) boardW*=1.01;
+  if(mousePressed && mouseButton==RIGHT) boardW*=0.99;
+}
+```
+## 九乘九顆白棋子
+```processing
+void setup(){
+  size(500,500);
+}
+void draw(){
+  for(int x=50;x<=450;x+=50)
+    for(int y=50;y<=450;y+=50)
+      ellipse(x,y, 50,50);
+}
+```
+## 陣列記棋，0是白棋，1是黑棋
+```processing
+void setup(){
+  size(500,500);
+}
+int [][] go ={
+  {1,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,1,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,1,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+};
+void draw(){
+  for(int i=0;i<9;i++)
+    for(int j=0;j<9;j++)
+    {
+      if(go[i][j]==1) fill(0);
+      else fill(255);
+      ellipse(50+j*50,50+i*50, 50,50);
+    }
+}
+```
+## 棋盤，0沒棋，1黑棋，2白棋
+```processing
+void setup(){
+  size(500,500);
+}
+int [][] go ={
+  {0,0,1,0,0,0,0,0,0},
+  {0,0,0,0,0,2,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,1,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,2,0,0,1,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+};
+void draw(){
+  background(#F0BD50);
+  for(int i=1;i<10;i++){
+    line(50,i*50, 450,i*50);
+    line(i*50,50, i*50,450);
+  }
+  for(int i=0;i<9;i++)
+    for(int j=0;j<9;j++)
+    {
+      if(go[i][j]==1){
+        fill(0);
+        ellipse(50+j*50,50+i*50, 40,40);
+      }
+      else if(go[i][j]==2){
+        fill(255);
+        ellipse(50+j*50,50+i*50, 40,40);
+      }
+    }
+}
+```
+## 滑鼠放棋子，白棋先手
+```processing
+void setup(){
+  size(500,500);
+}
+int [][] go ={
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+  {0,0,0,0,0,0,0,0,0},
+};
+int turn=1;
+void mousePressed(){
+  int i=(mouseY-25)/50,j=(mouseX-25)/50;
+  if(go[i][j]==0){
+    go[i][j]=(turn%2==1)? 2:1;
+    turn++;
+  }
+}
+void draw(){
+  background(#F0BD50);
+  for(int i=1;i<10;i++){
+    line(50,i*50, 450,i*50);
+    line(i*50,50, i*50,450);
+  }
+  for(int i=0;i<9;i++)
+    for(int j=0;j<9;j++)
+    {
+      if(go[i][j]==1){
+        fill(0);
+        ellipse(50+j*50,50+i*50, 40,40);
+      }
+      else if(go[i][j]==2){
+        fill(255);
+        ellipse(50+j*50,50+i*50, 40,40);
+      }
+    }
+}
 ```
