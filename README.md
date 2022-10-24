@@ -1187,3 +1187,208 @@ void keyPressed(){
   file3.play();
 }
 ```
+# Week08
+## 載入、播放音樂
+```processing
+import processing.sound.*;
+SoundFile sound1,sound2,sound3;
+void setup(){
+  size(200,200);
+  sound1=new SoundFile(this, "In Game Music.mp3");
+  sound1.play();
+}
+void draw(){
+
+}
+```
+## 停止、切換音樂
+```processing
+import processing.sound.*;
+SoundFile sound1,sound2,sound3;
+void setup(){
+  size(200,200);
+  sound1=new SoundFile(this, "In Game Music.mp3");
+  sound2=new SoundFile(this, "Intro Song_Final.mp3");
+  sound1.play();
+}
+int stage=1;
+void draw(){
+  background(255);
+  fill(255,0,0);
+  textSize(50);
+  textAlign(CENTER,CENTER);
+  text("stage"+stage, 100,100);
+}
+void mousePressed(){
+  if(stage==1){
+    sound1.stop();
+    sound2.play();
+    stage=2;
+  }else if(stage==2){
+    sound2.stop();
+    sound1.play();
+    stage=1;
+  }
+}
+```
+## 舞台切換
+```processing
+void setup(){
+  size(200,200);
+}
+int stage=1;
+void draw(){
+  background(255);
+  fill(255,0,0);
+  textSize(50);
+  textAlign(CENTER,CENTER);
+  text("stage"+stage, 100,100);
+}
+void mousePressed(){
+  if(stage==1) stage=2;
+  else if(stage==2) stage=1;
+}
+```
+## 按鍵盤讓移動中的球停止
+```processing
+void setup(){
+  size(400,300);
+}
+int fruitX=200,fruitY=150;
+float fruitVX=1,fruitVY=-1;
+boolean flying=true;
+void draw(){
+  background(255,255,0);
+  ellipse(fruitX,fruitY, 50,50);
+  if(flying){
+    fruitX+=fruitVX;
+    fruitY+=fruitVY;
+  }
+}
+void keyPressed(){
+ flying=false; 
+}
+```
+## 讓球飛成拋物線，按鍵盤重飛一顆球
+```processing
+void setup(){
+  size(400,300);
+}
+float fruitX=200,fruitY=300;
+float fruitVX=-1,fruitVY=-13;
+boolean flying=true;
+void draw(){
+  background(255,255,0);
+  ellipse(fruitX,fruitY, 50,50);
+  if(flying){
+    fruitX+=fruitVX;
+    fruitY+=fruitVY;
+    fruitVY+=0.98/3;
+  }
+}
+void keyPressed(){
+  flying=false;
+  fruitReset();
+}
+void fruitReset(){
+  fruitX=random(100,300);
+  fruitY=300;
+  fruitVX=random(-2,2);
+  fruitVY=-13;
+  flying=true;
+}
+```
+## 把球變成物件
+```processing
+class Fruit{
+  float x,y,vx,vy;
+  boolean flying;
+  PApplet sketch;
+  Fruit(PApplet _sketch){
+    sketch=_sketch;
+    reset();
+  }
+  void reset(){
+    x=sketch.random(100,300);
+    y=300;
+    vx=sketch.random(-2,2);
+    vy=-13;
+    flying=true;
+  }
+  void update(){
+    x+=vx;
+    y+=vy;
+    vy+=0.98/3;
+  }
+}
+Fruit fruit;
+void setup(){
+  size(400,300);
+  fruit=new Fruit(this);
+}
+void draw(){
+  background(255,255,0);
+  ellipse(fruit.x,fruit.y, 50,50);
+  if(fruit.flying) fruit.update();
+}
+void keyPressed(){
+  fruit.reset();
+}
+```
+## 簡易打字消除遊戲，將物件的程式碼移至分頁、使用物件陣列、幫物件加上字
+```processing
+//主頁，主程式
+Fruit [] fruits;
+void setup(){
+  size(400,300);
+  fruits=new Fruit[3];
+  for(int i=0;i<3;i++){
+    fruits[i]=new Fruit(this);
+  }
+}
+void draw(){
+  background(255,255,0);
+  for(int i=0;i<3;i++){
+    fill(255);
+    ellipse(fruits[i].x,fruits[i].y, 50,50);
+    textSize(30);
+    textAlign(CENTER,CENTER);
+    fill(0);
+    text(fruits[i].c, fruits[i].x,fruits[i].y);
+    if(fruits[i].flying) fruits[i].update();
+  }
+}
+void keyPressed(){
+  for(int i=0;i<3;i++){
+    if(keyCode==fruits[i].c){
+      fruits[i].reset();
+    }
+  }
+}
+//分頁，物件
+String line="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+class Fruit{
+  float x,y,vx,vy;
+  boolean flying;
+  char c;
+  PApplet sketch;
+  Fruit(PApplet _sketch){
+    sketch=_sketch;
+    reset();
+  }
+  void reset(){
+    x=sketch.random(100,300);
+    y=300;
+    vx=sketch.random(-2,2);
+    vy=-13;
+    flying=true;
+    int i=int(random(26));
+    c=line.charAt(i);
+  }
+  void update(){
+    x+=vx;
+    y+=vy;
+    vy+=0.98/3;
+  }
+}
+```
